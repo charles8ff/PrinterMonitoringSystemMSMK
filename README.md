@@ -15,7 +15,14 @@ Work in progress
 3. ccc
 4. hhh
 
+## Technologies Applied
+
+```bash
+echo hello world
+```
+
 ## Branches Usage
+
 
 ## Credits
 
