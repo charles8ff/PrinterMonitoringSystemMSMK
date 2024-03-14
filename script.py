@@ -1,4 +1,4 @@
-import cv2 #for camera
+import cv2 #for camera #pip install opencv-python
 import schedule 
 import time
 from threading import Thread #for the future
