@@ -1,0 +1,10 @@
+2024-03-18 18:30:11,311 - WebcamCaptureLogger - INFO - Program started at timestamp: 1710783011.3111584
+2024-03-18 18:30:13,657 - WebcamCaptureLogger - WARNING - Invalid option for resolution.
+2024-03-18 18:30:14,175 - WebcamCaptureLogger - WARNING - Invalid option for resolution.
+2024-03-18 18:30:14,928 - WebcamCaptureLogger - WARNING - Invalid option for resolution.
+2024-03-18 18:30:15,634 - WebcamCaptureLogger - WARNING - Invalid option for resolution.
+2024-03-18 18:39:02,273 - WebcamCaptureLogger - INFO - Resolution set to 1920x1080
+2024-03-18 18:39:02,273 - WebcamCaptureLogger - INFO - Camera open in : 530.962 seconds
+2024-03-18 18:39:02,719 - WebcamCaptureLogger - INFO - Photo taken and saved at ./photos/2024-03-18T17-39-02-685Z.jpg with resolution 1920x1080.
+2024-03-18 18:39:02,719 - WebcamCaptureLogger - INFO - Camera released.
+2024-03-18 18:39:03,106 - WebcamCaptureLogger - INFO - Program executed in 531.794 seconds.
