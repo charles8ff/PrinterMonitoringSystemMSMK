@@ -23,6 +23,10 @@ echo hello world
 
 ## Branches Usage
 
+There are 2 branches in this project, the __*main*__ branch will carry the README updates and the merging updates from the __*dev*__ branch, where new functionalities will be implemented.
+
+The standard procedure will always be to merge main into dev first to avoid possible conflicts and keep branch main clean.
+
 ## Credits
 
 ## Additional Documentations
