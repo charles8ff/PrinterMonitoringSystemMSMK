@@ -1,5 +1,5 @@
 import cv2 #for camera #pip install opencv-python
-from datetime import datetime
+from datetime import datetime, timezone
 import schedule 
 import time
 from threading import Thread #for the future
@@ -14,10 +14,14 @@ res_options = {
     '4' : [640, 360]
 }
 
+interval = 1 # in seconds?
+
 def set_resolution(cap, width, height):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-    
+
+def set_interval():
+    pass
     
 def take_photo(chosen_res, save_path ='./photos/'):
     # Check for path 
@@ -38,8 +42,9 @@ def take_photo(chosen_res, save_path ='./photos/'):
     print(f'Camera open in : {str(camTime)[:7]} seconds') # ~90 s in desktop
     
     ret, frame = cap.read()
-    now =  datetime.now()
-    filename = str(now.strftime('%Y%m%d_%H%M%S.jpg'))
+    now =  datetime.now(timezone.utc).isoformat()
+    filename = now.replace(':', '-').replace('.', '-')
+    filename += '.jpg'
     full_path = os.path.join(save_path, filename)
 
     if ret:
