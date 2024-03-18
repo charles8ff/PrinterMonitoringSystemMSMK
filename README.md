@@ -8,12 +8,12 @@ Work in progress
 
 ## Table of Contents
 
-1. aaa
+1. TechnologiesApplied
 2. bbb
     1. ddd
     2. jjjs
 3. ccc
-4. hhh
+4. Additional Documentation
 
 ## Technologies Applied
 
@@ -30,3 +30,5 @@ The standard procedure will always be to merge main into dev first to avoid poss
 ## Credits
 
 ## Additional Documentations
+
+Further reading at CCCU
