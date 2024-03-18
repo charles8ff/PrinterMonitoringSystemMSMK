@@ -27,7 +27,7 @@ def take_photo(chosen_res, save_path ='./photos/'):
     ### TIMERS
     cam = time.time()
     camTime = cam - start
-    print(f'Camera open in : {str(camTime)[:5]} seconds') # ~90 s in desktop
+    print(f'Camera open in : {str(camTime)[:7]} seconds') # ~90 s in desktop
     
     ret, frame = cap.read()
     now =  datetime.now()
@@ -47,11 +47,11 @@ def take_photo(chosen_res, save_path ='./photos/'):
 start = time.time()
 print(f'Program started at timestamp: {str(start)}') # my machine is slow
 
-res = [1280, 720]
+res = [1920, 1080]
 take_photo(res)
 
 ### TIMERS 
 print('Success')
 end = time.time()
 excTime = end - start
-print (str(excTime)[:5])
+print (str(excTime)[:7])
