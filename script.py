@@ -7,6 +7,13 @@ import os
 
 chosen_res = [0, 0]
 
+res_options = {
+    '1' : [1920, 1080],
+    '2' : [1280, 720],
+    '3' : [720, 480],
+    '4' : [640, 360]
+}
+
 def set_resolution(cap, width, height):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
@@ -34,22 +41,15 @@ def take_photo(chosen_res, save_path ='./photos/'):
     now =  datetime.now()
     filename = str(now.strftime('%Y%m%d_%H%M%S.jpg'))
     full_path = os.path.join(save_path, filename)
-    # print(full_path)
+
     if ret:
         cv2.imwrite(full_path, frame)
-        print(f'Photo taken and saved at {full_path} with resolution {chosen_res[0]}x{chosen_res[1]}')
+        print(f'Photo taken and saved at {full_path} with resolution {chosen_res[0]}x{chosen_res[1]}.')
     else:
-        print('Failed to take photo')
+        print('Failed to take photo.')
     
     # Release the camera
     cap.release()
-
-res_options = {
-    '1' : [1920, 1080],
-    '2' : [1280, 720],
-    '3' : [720, 480],
-    '4' : [640, 360]
-}
 
 def get_user_res(res_options):
     
@@ -61,9 +61,9 @@ def get_user_res(res_options):
     choice = input(prompt)
     
     while choice not in res_options:
-        print('Chosen option not supported, please try again.')
+        print('Chosen option not supported, please try again.\n')
         choice = input(prompt)
-    # print(choice, type(choice))
+
     return choice
 
 ### TIMERS   
@@ -72,7 +72,6 @@ print(f'Program started at timestamp: {str(start)}') # my machine is slow
 
 
 ### Ask users
-
 user_res = get_user_res(res_options)
 res = res_options[user_res]
 take_photo(res)
