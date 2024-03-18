@@ -22,6 +22,7 @@ def take_photo(chosen_res, save_path ='./photos/'):
     if not cap.isOpened():
         raise IOError('Cannot open webcam')
     
+    # Set values from chosen_res to the cv2 object
     set_resolution(cap, chosen_res[0], chosen_res[1])
     
     ### TIMERS
@@ -33,21 +34,47 @@ def take_photo(chosen_res, save_path ='./photos/'):
     now =  datetime.now()
     filename = str(now.strftime('%Y%m%d_%H%M%S.jpg'))
     full_path = os.path.join(save_path, filename)
-    print(full_path)
+    # print(full_path)
     if ret:
         cv2.imwrite(full_path, frame)
-        print(f'Photo taken and saved as {full_path}')
+        print(f'Photo taken and saved at {full_path} with resolution {chosen_res[0]}x{chosen_res[1]}')
     else:
         print('Failed to take photo')
     
     # Release the camera
     cap.release()
 
+res_options = {
+    '1' : [1920, 1080],
+    '2' : [1280, 720],
+    '3' : [720, 480],
+    '4' : [640, 360]
+}
+
+def get_user_res(res_options):
+    
+    prompt = 'Choose a resolution between the options given:\n'
+    for key, value in res_options.items():
+        prompt += f'\t{key}): {value[0]} x {value[1]}\n'
+    prompt += '\t>> '
+    
+    choice = input(prompt)
+    
+    while choice not in res_options:
+        print('Chosen option not supported, please try again.')
+        choice = input(prompt)
+    # print(choice, type(choice))
+    return choice
+
 ### TIMERS   
 start = time.time()
 print(f'Program started at timestamp: {str(start)}') # my machine is slow
 
-res = [1920, 1080]
+
+### Ask users
+
+user_res = get_user_res(res_options)
+res = res_options[user_res]
 take_photo(res)
 
 ### TIMERS 
