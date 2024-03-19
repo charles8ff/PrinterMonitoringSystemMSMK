@@ -6,7 +6,8 @@ from threading import Thread #for the future
 import os
 import logging
 from logging.handlers import BaseRotatingHandler
-
+######
+### Setup parameters, change this variables in order to change main functionalities acording to the hardware available
 max_logger_lines = 1500
 
 chosen_res = [0, 0]
@@ -19,6 +20,9 @@ res_options = {
 }
 
 interval = 1 # in seconds?
+
+### End of setup parameters
+######
 
 # Create logs directory
 logs_path = './logs'
