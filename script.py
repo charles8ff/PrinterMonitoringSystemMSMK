@@ -7,6 +7,8 @@ import os
 import logging
 from logging.handlers import BaseRotatingHandler
 
+max_logger_lines = 1500
+
 chosen_res = [0, 0]
 
 res_options = {
@@ -69,7 +71,7 @@ log_filename = os.path.join(logs_path, 'webcam_capture.log')
 logger = logging.getLogger('WebcamCaptureLogger')
 logger.setLevel(logging.DEBUG)
 
-handler = MaxLinesRotatingFileHandler(log_filename, maxLines = 1500, backupCount = 5)
+handler = MaxLinesRotatingFileHandler(log_filename, maxLines = max_logger_lines, backupCount = 5)
 handler.setLevel(logging.DEBUG)
 
 formatter = MyFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -115,15 +117,15 @@ def take_photo(chosen_res, save_path ='./photos/'):
 
     if ret:
         cv2.imwrite(full_path, frame)
-        logger.info(f'Photo taken and saved at {full_path} with resolution {chosen_res[0]}x{chosen_res[1]}.')
-        print(f'Photo taken and saved at {full_path} with resolution {chosen_res[0]}x{chosen_res[1]}.')
+        logger.info(f'Photo taken and saved at {full_path} with resolution {chosen_res[0]}x{chosen_res[1]} px.')
+        print(f'Photo taken and saved at {full_path} with resolution {chosen_res[0]}x{chosen_res[1]} px.')
     else:
-        logger.error('Failed to take photo')
+        logger.error('Failed to take photo.')
         print('Failed to take photo.')
 
     # Release the camera
-    logger.info('Camera released.')
     cap.release()
+    logger.info('Camera released.')
 
 def get_user_res(res_options):
 
@@ -140,12 +142,13 @@ def get_user_res(res_options):
         print('Chosen option not supported, please try again.\n')
         choice = input(prompt)
 
+    logger.info(f'Choice valid, resolution option {choice} selected.')
     return choice
 
 ### TIMERS
 start = time.time()
 logger.info(f'Program started at timestamp: {str(start)}')
-print(f'Program started at timestamp: {str(start)}') # my machine is slow
+print(f'Program started at timestamp: {str(start)}') # My machine is slow :(
 
 # Ask users
 user_res = get_user_res(res_options)

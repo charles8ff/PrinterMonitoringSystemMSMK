@@ -1,4 +1,1 @@
-2024-03-19T13:59:55.470018+01:00 - WebcamCaptureLogger - INFO - Camera open in : 265.590 seconds
-2024-03-19T13:59:56.048962+01:00 - WebcamCaptureLogger - INFO - Photo taken and saved at ./photos/2024-03-19T13-59-56-006+01-00.jpg with resolution 1920x1080.
-2024-03-19T13:59:56.049960+01:00 - WebcamCaptureLogger - INFO - Camera released.
-2024-03-19T13:59:56.458615+01:00 - WebcamCaptureLogger - INFO - Program executed in 266.578 seconds.
+
