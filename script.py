@@ -6,9 +6,14 @@ from threading import Thread #for the future
 import os
 import logging
 from logging.handlers import BaseRotatingHandler
+import gzip
+import shutil
+
+
+
 ######
 ### Setup parameters, change this variables in order to change main functionalities acording to the hardware available
-max_logger_lines = 1500
+max_logger_lines = 15
 
 chosen_res = [0, 0]
 
@@ -20,6 +25,7 @@ res_options = {
 }
 
 interval = 1 # in seconds?
+photos_in_interval = 1 #
 
 ### End of setup parameters
 ######
@@ -57,10 +63,19 @@ class MaxLinesRotatingFileHandler(BaseRotatingHandler):
         for i in range(self.backupCount - 1, 0, -1):
             sfn = self.rotation_filename(f'{self.baseFilename}.{i}')
             dfn = self.rotation_filename(f'{self.baseFilename}.{i + 1}')
+
             if os.path.exists(sfn):
                 if os.path.exists(dfn):
                     os.remove(dfn)
                 os.rename(sfn, dfn)
+        # Compress the oldest file just before it's rotated out
+        oldest_file = f'{self.baseFilename}.{self.backupCount}'
+        if os.path.exists(oldest_file):
+            with open(oldest_file, 'rb') as f_in:
+                with gzip.open(f'{oldest_file}.gz', 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            os.remove(oldest_file)  # Remove the original to save space
+
         dfn = self.rotation_filename(f'{self.baseFilename}.1')
         if os.path.exists(dfn):
             os.remove(dfn)
