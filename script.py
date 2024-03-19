@@ -22,7 +22,15 @@ interval = 1 # in seconds?
 logs_path = './logs'
 os.makedirs(logs_path, exist_ok = True)
 
-# Custom log handler
+# Custom format for dates
+class MyFormatter(logging.Formatter):
+    # Override the converter in logging.Formatter
+    converter = datetime.fromtimestamp
+
+    # Override formatTime in logging.Formatter
+    def formatTime(self, record, datefmt = None):
+        return self.converter(record.created).astimezone().isoformat()
+# Custom log rotation handler
 class MaxLinesRotatingFileHandler(BaseRotatingHandler):
     def __init__(self, filename, maxLines = 1500, backupCount = 5, encoding = None, delay = False):
         self.maxLines = maxLines
@@ -56,17 +64,15 @@ class MaxLinesRotatingFileHandler(BaseRotatingHandler):
             self.stream = self._open()
         self.counter = 0  # Reset counter
 
-
-
 # Set up logging
 log_filename = os.path.join(logs_path, 'webcam_capture.log')
 logger = logging.getLogger('WebcamCaptureLogger')
 logger.setLevel(logging.DEBUG)
 
-handler = MaxLinesRotatingFileHandler(log_filename, maxLines=1500, backupCount = 5)
+handler = MaxLinesRotatingFileHandler(log_filename, maxLines = 1500, backupCount = 5)
 handler.setLevel(logging.DEBUG)
 
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = MyFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
 logger.addHandler(handler)
@@ -100,10 +106,11 @@ def take_photo(chosen_res, save_path ='./photos/'):
     print(f'Camera open in : {str(camTime)[:7]} seconds') # ~90 s in desktop
 
     ret, frame = cap.read()
-    now = datetime.now(timezone.utc).isoformat(timespec='milliseconds')
+    now = datetime.now().astimezone().isoformat(timespec = 'milliseconds')
+    # Replace characters not supported in filenames
     filename = now.replace(':', '-').replace('.', '-')
-    filename = filename[:-6]
-    filename += 'Z.jpg'
+    # filename = filename[:-6]
+    filename += '.jpg'
     full_path = os.path.join(save_path, filename)
 
     if ret:
@@ -127,6 +134,7 @@ def get_user_res(res_options):
 
     choice = input(prompt)
 
+    # Input validation
     while choice not in res_options:
         logger.warning('Invalid option for resolution.')
         print('Chosen option not supported, please try again.\n')
@@ -139,8 +147,7 @@ start = time.time()
 logger.info(f'Program started at timestamp: {str(start)}')
 print(f'Program started at timestamp: {str(start)}') # my machine is slow
 
-
-### Ask users
+# Ask users
 user_res = get_user_res(res_options)
 res = res_options[user_res]
 take_photo(res)
