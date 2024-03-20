@@ -1,11 +1,38 @@
-import cv2 #for camera #pip install opencv-python
-from datetime import datetime
+import sys
+import subprocess
+
+modules = {
+    'cv2': 'opencv-python',  # 'cv2' is part of the 'opencv-python' package
+    # Standard library modules don't need to be checked for installation, but listed here for clarity
+    'datetime': None,  # Part of the Python Standard Library
+    'time': None,      # Part of the Python Standard Library
+    'os': None,        # Part of the Python Standard Library
+    'logging': None,   # Part of the Python Standard Library
+    'gzip': None,      # Part of the Python Standard Library
+    'shutil': None,    # Part of the Python Standard Library
+}
+for module, package in modules.items():
+    try:
+        # Try to import the module
+        __import__(module)
+        print(f'{module} is already installed in this machine.')
+    except ImportError as e:
+        if package:
+            # If the module is not found, and it's not part of the standard library (has a specified package), install it
+            print(f'{module} not found, installing {package}...')
+            subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
+        else:
+            print(f'Error importing {module}, but it is part of the Python Standard Library. Error: {e}')
+
+import cv2
 import time
 import os
 import logging
-from logging.handlers import BaseRotatingHandler
 import gzip
 import shutil
+
+from datetime import datetime
+from logging.handlers import BaseRotatingHandler
 
 ######
 ### Setup parameters, change this variables in order to change main functionalities acording to the hardware available
