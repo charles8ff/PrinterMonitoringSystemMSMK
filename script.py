@@ -1,21 +1,20 @@
 import cv2 #for camera #pip install opencv-python
-from datetime import datetime, timezone
-import schedule
+from datetime import datetime
 import time
-from threading import Thread #for the future
 import os
 import logging
 from logging.handlers import BaseRotatingHandler
 import gzip
 import shutil
 
-
-
 ######
 ### Setup parameters, change this variables in order to change main functionalities acording to the hardware available
-max_logger_lines = 15
 
-chosen_res = [0, 0]
+max_logger_lines = 30
+
+max_photos_allowed = 100
+
+max_interval_time = 21600
 
 res_options = {
     '1' : [1920, 1080],
@@ -24,15 +23,18 @@ res_options = {
     '4' : [640, 360]
 }
 
-interval = 1 # in seconds?
-photos_in_interval = 1 #
+logs_path = './logs'
+save_path ='./photos/'
+
 
 ### End of setup parameters
 ######
 
-# Create logs directory
-logs_path = './logs'
-os.makedirs(logs_path, exist_ok = True)
+chosen_res = [0, 0]
+
+photos_to_take = 1 # Gets passed as an INT
+
+interval = 1 # wait time between photos in seconds?
 
 # Custom format for dates
 class MyFormatter(logging.Formatter):
@@ -85,6 +87,9 @@ class MaxLinesRotatingFileHandler(BaseRotatingHandler):
             self.stream = self._open()
         self.counter = 0  # Reset counter
 
+# Create logs and photos directories
+os.makedirs(logs_path, exist_ok = True)
+os.makedirs(save_path, exist_ok = True)
 # Set up logging
 log_filename = os.path.join(logs_path, 'webcam_capture.log')
 logger = logging.getLogger('WebcamCaptureLogger')
@@ -92,8 +97,8 @@ logger.setLevel(logging.DEBUG)
 
 handler = MaxLinesRotatingFileHandler(log_filename, maxLines = max_logger_lines, backupCount = 5)
 handler.setLevel(logging.DEBUG)
-
-formatter = MyFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+user_name = os.getlogin() # Get who is using the script
+formatter = MyFormatter(f'%(asctime)s - {user_name} - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
 logger.addHandler(handler)
@@ -106,7 +111,7 @@ def set_resolution(cap, width, height):
 def set_interval():
     pass
 
-def take_photo(chosen_res, save_path ='./photos/'):
+def take_photo(chosen_res, save_path):
     # Check for path
     os.makedirs(save_path, exist_ok = True)
 
@@ -124,13 +129,12 @@ def take_photo(chosen_res, save_path ='./photos/'):
     cam = time.time()
     camTime = cam - start
     logger.info(f'Camera open in : {str(camTime)[:7]} seconds')
-    print(f'Camera open in : {str(camTime)[:7]} seconds') # ~90 s in desktop
+    print(f'Camera open in : {str(camTime)[:7]} seconds')
 
     ret, frame = cap.read()
     now = datetime.now().astimezone().isoformat(timespec = 'milliseconds')
     # Replace characters not supported in filenames
     filename = now.replace(':', '-').replace('.', '-')
-    # filename = filename[:-6]
     filename += '.jpg'
     full_path = os.path.join(save_path, filename)
 
@@ -164,19 +168,69 @@ def get_user_res(res_options):
     logger.info(f'Choice valid, resolution option {choice} selected.')
     return choice
 
-### TIMERS
+def get_user_photos():
+    prompt = 'Type how many photos you need in total:\n\t>>'
+    choice = input(prompt)
+
+    # Input validation
+    while not choice.isnumeric():
+        logger.warning('Invalid option for number of photos.')
+        print('Chosen option not supported, please try again.\n')
+        choice = input(prompt)
+
+    choice = int(choice)
+    while choice > max_photos_allowed:
+        logger.warning('Too much photos requested.')
+        print('Chosen option not supported, please ask for less photos.\n')
+        choice = input(prompt)
+        choice = int(choice)
+
+    logger.info(f'Choice valid, {choice} photo(s) requested.')
+    return choice
+
+def get_user_interval():
+    prompt = 'Type how many seconds to wait between each photo:\n\t>>'
+    choice = input(prompt)
+
+    # Input validation
+    while not choice.isnumeric():
+        logger.warning('Invalid option for interval time.')
+        print('Chosen option not supported, please try again.\n')
+        choice = input(prompt)
+
+    choice = int(choice)
+    while choice > max_interval_time:
+        logger.warning('Too much wait time requested.')
+        print('Chosen option not supported, please shorten time between photos.\n')
+        choice = input(prompt)
+        choice = int(choice)
+
+    logger.info(f'Choice valid, {choice} interval second(s) requested.')
+    return choice
+
 start = time.time()
-logger.info(f'Program started at timestamp: {str(start)}')
+logger.info(f'Program started!.')
+
+### TBDeleted
 print(f'Program started at timestamp: {str(start)}') # My machine is slow :(
 
-# Ask users
+# Ask users params
+photos_to_take = get_user_photos()
+interval = get_user_interval()
 user_res = get_user_res(res_options)
-res = res_options[user_res]
-take_photo(res)
 
-### TIMERS
+res = res_options[user_res]
+
+for i in range(photos_to_take):
+
+    take_photo(res, save_path)
+    logger.info('Interval started.')
+    time.sleep(interval)
+    logger.info('Interval ended.')
+
 end = time.time()
 excTime = end - start
 logger.info(f'Program executed in {str(excTime)[:7]} seconds.')
+### TBDeleted
 print (str(excTime)[:7])
 print('###END')
