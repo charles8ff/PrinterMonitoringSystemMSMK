@@ -24,7 +24,7 @@ for module, package in modules.items():
             print(f'{module} not found, installing {package}...')
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
         else:
-            print(f'Error importing {module}, but it is part of the Python Standard Library. Error: {e}')
+            print(f'Error importing {module}. Error: {e}')
 
 import cv2
 
