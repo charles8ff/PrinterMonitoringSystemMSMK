@@ -12,7 +12,7 @@
 
 ## Project Description
 
-This project aims to take photos of the main camera of the machine, with the _user being able to choose_ the resolution from a given list of options, the number of photos and interval between them.
+This project aims to take photos of the main camera of the machine, with the user being _able to choose_ the resolution from a given list of options, the number of photos and interval between them.
 
 The script has some constants (showed below) that could be changed depending on the hardware performance, but I have set them according to the specifications given by the instructions.
 
