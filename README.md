@@ -6,6 +6,8 @@ Work in progress
 
 ## Project Description
 
+Thsi project aims to take photos of the main camera of the machine, with the user being able to choose the resolution form a given list of options, and the number of photos and interval between them.
+
 ## Table of Contents
 
 1. Technologies Applied
