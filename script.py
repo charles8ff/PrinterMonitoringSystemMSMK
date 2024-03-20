@@ -1,16 +1,18 @@
-import sys
+import gzip
+import logging
+import os
+import shutil
 import subprocess
+import sys
+import time
+from datetime import datetime
+from logging.handlers import BaseRotatingHandler
 
 modules = {
     'cv2': 'opencv-python',  # 'cv2' is part of the 'opencv-python' package
-    # Standard library modules don't need to be checked for installation, but listed here for clarity
-    'datetime': None,  # Part of the Python Standard Library
-    'time': None,      # Part of the Python Standard Library
-    'os': None,        # Part of the Python Standard Library
-    'logging': None,   # Part of the Python Standard Library
-    'gzip': None,      # Part of the Python Standard Library
-    'shutil': None,    # Part of the Python Standard Library
 }
+# The modules dictionary is left on purpose in order to grow the dependecies of the script in the future
+
 for module, package in modules.items():
     try:
         # Try to import the module
@@ -25,14 +27,6 @@ for module, package in modules.items():
             print(f'Error importing {module}, but it is part of the Python Standard Library. Error: {e}')
 
 import cv2
-import time
-import os
-import logging
-import gzip
-import shutil
-
-from datetime import datetime
-from logging.handlers import BaseRotatingHandler
 
 ######
 ### Setup parameters, change this variables in order to change main functionalities acording to the hardware available
@@ -57,12 +51,12 @@ PHOTOS_PATH ='./photos/'
 ### End of setup parameters
 ######
 
-user_res = [0, 0] # Will store one of the values in RES_OPTIONS
+user_res = [0, 0] # Will store one of the values in RES_OPTIONS dictionary
 
 photos_to_take = 1 # Gets stored as INT from get_user_photos()
 
 interval = 1 # Wait time between photos in seconds,
-             # gets stored as INT from get_user_interval()
+             # Gets stored as INT from get_user_interval()
 
 # Custom format for dates
 class MyFormatter(logging.Formatter):
@@ -217,50 +211,53 @@ def get_user_interval():
     return choice
 
 # Start timer
-start = time.time()
-camTime = start
-# Create logs and photos directories
-os.makedirs(LOGS_PATH, exist_ok = True)
-os.makedirs(PHOTOS_PATH, exist_ok = True)
+if __name__=="__main__":
 
-# Set up logging
-log_filename = os.path.join(LOGS_PATH, 'webcam_capture.log')
-logger = logging.getLogger('WebcamCaptureLogger')
-logger.setLevel(logging.DEBUG)
+    # Beginning timer
+    start = time.time()
 
-handler = MaxLinesRotatingFileHandler(log_filename, maxLines = MAX_LOGGER_LINES, backupCount = 5)
-handler.setLevel(logging.DEBUG)
-user_name = os.getlogin() # Get who is using the script
-formatter = MyFormatter(f'%(asctime)s - {user_name} - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+    # Create logs and photos directories
+    os.makedirs(LOGS_PATH, exist_ok = True)
+    os.makedirs(PHOTOS_PATH, exist_ok = True)
 
-# First log entry
-logger.info(f'Program started!')
+    # Set up logging
+    log_filename = os.path.join(LOGS_PATH, 'webcam_capture.log')
+    logger = logging.getLogger('WebcamCaptureLogger')
+    logger.setLevel(logging.DEBUG)
 
-# Ask users params
-photos_to_take = get_user_photos()
+    handler = MaxLinesRotatingFileHandler(log_filename, maxLines = MAX_LOGGER_LINES, backupCount = 5)
+    handler.setLevel(logging.DEBUG)
+    user_name = os.getlogin() # Get who is using the script
+    formatter = MyFormatter(f'%(asctime)s - {user_name} - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
-if photos_to_take == 1:
-    user_res = get_user_res(RES_OPTIONS)
-else:
-    interval = get_user_interval()
-    user_res = get_user_res(RES_OPTIONS)
+    # First log entry
+    logger.info(f'Program started!')
 
-res = RES_OPTIONS[user_res] # See user_res declaration at line 33
+    # Ask users params
+    photos_to_take = get_user_photos()
 
-if photos_to_take == 1:
-    take_photo(res, PHOTOS_PATH)
-else:
-    # Loop for taking more than photos
-    for i in range(photos_to_take):
+    if photos_to_take == 1:
+        user_res = get_user_res(RES_OPTIONS)
+    else:
+        interval = get_user_interval()
+        user_res = get_user_res(RES_OPTIONS)
 
+    res = RES_OPTIONS[user_res] # See user_res declaration at line 60
+
+    if photos_to_take == 1:
         take_photo(res, PHOTOS_PATH)
-        logger.info('Interval started.')
-        time.sleep(interval)
-        logger.info('Interval ended.')
+    else:
+        # Loop for taking more than photos
+        for i in range(photos_to_take):
 
-# End timers
-end = time.time()
-excTime = end - start
-logger.info(f'Program executed in {str(excTime)[:7]} seconds.')
+            take_photo(res, PHOTOS_PATH)
+            logger.info('Interval started.')
+            time.sleep(interval)
+            logger.info('Interval ended.')
+
+    # End timers
+    end = time.time()
+    excTime = end - start
+    logger.info(f'Program executed in {str(excTime)[:7]} seconds.')
