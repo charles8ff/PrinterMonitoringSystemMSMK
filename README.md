@@ -1,6 +1,6 @@
 # Printer Monitoring System
 
-Assignment Brief 1  - Advanced Operating Systems - BBSc (Hons) Computer Forensics and Security
+> Assignment Brief 1  - Advanced Operating Systems - BBSc (Hons) Computer Forensics and Security
 
 Work in progress
 
@@ -10,14 +10,10 @@ Thsi project aims to take photos of the main camera of the machine, with the use
 
 ## Table of Contents
 
-1. Technologies Applied
-2. bbb
-    1. ddd
-    2. jjjs
-
-3. Branch Usage
-4. Credits
-5. Additional Documentation
+1. Project Description
+2. Branches Usage
+3. Credits
+4. Additional Documentation
 
 ## Technologies Applied
 
