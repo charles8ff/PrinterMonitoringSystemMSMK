@@ -10,6 +10,7 @@ from logging.handlers import BaseRotatingHandler
 
 modules = {
     'cv2': 'opencv-python',  # 'cv2' is part of the 'opencv-python' package
+    'psutil': 'psutil',      # 'psutil' is another external package for hardware measuring
 }
 # The modules dictionary is left on purpose in order to grow the dependecies of the script in the future
 
@@ -27,6 +28,7 @@ for module, package in modules.items():
             print(f'Error importing {module}. Error: {e}')
 
 import cv2
+import psutil
 
 ######
 ### Setup parameters, change this variables in order to change main functionalities acording to the hardware available
@@ -107,8 +109,16 @@ class MaxLinesRotatingFileHandler(BaseRotatingHandler):
         if not self.delay:
             self.stream = self._open()
         self.counter = 0  # Reset counter
+        logger.warning(f'Maximum logfile reached, file has been rotated')
 
 # Set hardware
+
+def get_RAM_usage(): # This function gets the actual ram usage
+    return str(str(psutil.virtual_memory()[1]/1000000000)[:7] + ' GB')
+
+def get_CPU_usage(): # This function gets the actual cpu usage
+    return str(str(psutil.cpu_percent(0.1)) + ' %')
+
 def set_resolution(cap, width, height):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
@@ -166,6 +176,8 @@ def get_user_res(RES_OPTIONS):
         choice = input(prompt)
 
     logger.info(f'Choice valid, resolution option {choice} selected.')
+    logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
+
     return choice
 
 def get_user_photos():
@@ -187,6 +199,8 @@ def get_user_photos():
         choice = int(choice)
 
     logger.info(f'Choice valid, {choice} photo(s) requested.')
+    logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
+
     return choice
 
 def get_user_interval():
@@ -208,6 +222,8 @@ def get_user_interval():
         choice = int(choice)
 
     logger.info(f'Choice valid, {choice} interval second(s) requested.')
+    logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
+
     return choice
 
 # Start timer
@@ -234,7 +250,7 @@ if __name__=="__main__":
 
     # First log entry
     logger.info(f'Program started!')
-
+    logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
     # Ask users params
     photos_to_take = get_user_photos()
 
@@ -247,17 +263,22 @@ if __name__=="__main__":
     res = RES_OPTIONS[user_res] # See user_res declaration at line 60
 
     if photos_to_take == 1:
+        logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
         take_photo(res, PHOTOS_PATH)
     else:
         # Loop for taking more than photos
         for i in range(photos_to_take):
 
+            logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
             take_photo(res, PHOTOS_PATH)
             logger.info('Interval started.')
+            logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
             time.sleep(interval)
             logger.info('Interval ended.')
+            logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
 
     # End timers
     end = time.time()
     excTime = end - start
+    logger.info(f'CPU usage at: {get_CPU_usage()} and RAM usage at {get_RAM_usage()}')
     logger.info(f'Program executed in {str(excTime)[:7]} seconds.')
