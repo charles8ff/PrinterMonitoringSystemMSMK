@@ -57,7 +57,3 @@ I have used the Python Documentation about [Logging Handlers](https://docs.pytho
 I have used the [OpenCV documentation](https://docs.opencv.org/4.x/index.html) in order to setup the webcam resolution and gain access safely to the webcam.
 
 I have consulted many sites and resources, including this [Stack Overflow post](https://stackoverflow.com/questions/63501504/python-logging-iso8601-timestamp-with-milliseconds-and-timezone-using-config-fi) that had a very similar approach to use the ISO8601 in the logs.
-
-## Additional Documentations
-
-Further reading at CCCU Blackboard under the instructions of the assignment.
