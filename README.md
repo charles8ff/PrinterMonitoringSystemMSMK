@@ -8,7 +8,6 @@
 2. [Technologies Applied](#technologies-applied)
 3. [Branches Usage](#branches-usage)
 4. [Credits](#credits)
-5. [Additional Documentation](#additional-documentations)
 
 ## Project Description
 
